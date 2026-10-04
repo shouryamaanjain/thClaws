@@ -75,6 +75,17 @@
       "install_url": "https://www.npmjs.com/package/@gongrzhe/server-gmail-autoauth-mcp",
       "post_install_message": "One-time Google OAuth setup: create a Desktop OAuth client in Google Cloud (enable the Gmail API), save it to ~/.gmail-mcp/gcp-oauth.keys.json, then run `npx @gongrzhe/server-gmail-autoauth-mcp auth` once to authorize. Desktop only — the browser auth flow does not work inside cloud workspace pods.",
       "homepage": "https://github.com/gongrzhe/server-gmail-autoauth-mcp"
+    },
+    {
+      "name": "cohesivity",
+      "short_description": "Headless infra for agents: Postgres, hosting, email, storage, etc.",
+      "description": "cohesivity.ai offers free agent native backend services. Anonymous account (no-signup) to get started through MCP or API. Hosting, postgres, email, storage, containers, LLMs, voice and third-party APIs. Includes free tiers and 5 USD/mo in AI and Search credits. Top-ups through x402.",
+      "category": "development",
+      "license": "MIT",
+      "license_tier": "open",
+      "transport": "sse",
+      "url": "https://cohesivity.ai/mcp",
+      "homepage": "https://cohesivity.ai"
     }
   ],
   "plugins": [

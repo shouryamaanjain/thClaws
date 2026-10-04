@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Marketplace: Cohesivity hosted MCP added to the catalog.**
+
 ## [0.138.0] — 2026-09-25
 
 **A release about an agent being able to reach its own files.** A workspace with
