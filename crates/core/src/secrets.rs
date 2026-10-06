@@ -85,6 +85,11 @@ pub fn set_backend(backend: Backend) -> Result<()> {
 /// `load_into_env`) until the Settings UI prompts the user to
 /// choose. This is the whole point — a fresh launch must not cause
 /// keychain access prompts.
+///
+/// Every writer of a secret (provider keys, the cloud and remote-agent
+/// tokens) must route by this, not by `get_backend()` with its own default:
+/// a writer that assumed Keychain while `set` refused it failed every
+/// sign-in made before the storage question was answered.
 pub fn resolved_backend() -> Backend {
     get_backend().unwrap_or(Backend::Dotenv)
 }

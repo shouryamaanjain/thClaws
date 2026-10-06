@@ -297,7 +297,7 @@ fn store_provider_key(provider: &str, key: &str) -> (bool, String, &'static str)
         let env_var = crate::providers::ProviderKind::from_name(provider)
             .and_then(|k| k.api_key_env())
             .or_else(|| crate::secrets::service_env_var(provider));
-        let backend = crate::secrets::get_backend().unwrap_or(crate::secrets::Backend::Keychain);
+        let backend = crate::secrets::resolved_backend();
         match backend {
             crate::secrets::Backend::Keychain => match crate::secrets::set(provider, key) {
                 Ok(()) => {

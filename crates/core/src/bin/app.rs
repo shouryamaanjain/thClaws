@@ -1060,7 +1060,16 @@ async fn main() {
                     AutoOutcome::Failed(e) => eprintln!(
                         "\x1b[33m[thclaws] could not upgrade this workspace ({e}) — opening it as it is\x1b[0m"
                     ),
-                    AutoOutcome::NotV2 | AutoOutcome::AlreadyV3 => {}
+                    AutoOutcome::AlreadyV3 => {}
+                    AutoOutcome::NotV2 => match thclaws_core::bots::migrate::mint_if_fresh(&cwd) {
+                        Some(Ok(_)) => eprintln!(
+                            "\x1b[36m[thclaws] new workspace — it can hold more than one agent\x1b[0m"
+                        ),
+                        Some(Err(e)) => eprintln!(
+                            "\x1b[33m[thclaws] could not set up this new workspace for agents ({e}) — opening it as a single agent\x1b[0m"
+                        ),
+                        None => {}
+                    },
                 }
             }
         }

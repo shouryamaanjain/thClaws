@@ -170,7 +170,7 @@ pub fn token() -> Option<String> {
 /// the in-flight CLI invocation can use it without a restart.
 pub fn set_token(token: &str) -> crate::error::Result<()> {
     let (key, env) = token_slot();
-    let backend = crate::secrets::get_backend().unwrap_or(crate::secrets::Backend::Keychain);
+    let backend = crate::secrets::resolved_backend();
     match backend {
         crate::secrets::Backend::Keychain => {
             crate::secrets::set(&key, token)?;
@@ -191,7 +191,7 @@ pub fn set_token(token: &str) -> crate::error::Result<()> {
 /// call doesn't see a stale value.
 pub fn clear_token() -> crate::error::Result<()> {
     let (key, env) = token_slot();
-    let backend = crate::secrets::get_backend().unwrap_or(crate::secrets::Backend::Keychain);
+    let backend = crate::secrets::resolved_backend();
     match backend {
         crate::secrets::Backend::Keychain => {
             let _ = crate::secrets::set(&key, "");
@@ -285,5 +285,42 @@ mod policy_url_tests {
             c.resolved_url_under(Some("https://sis.example".into())),
             "https://sis.example"
         );
+    }
+}
+
+#[cfg(test)]
+mod token_storage_tests {
+    /// A fresh install that never answered the storage question resolves
+    /// to Dotenv everywhere. `set_token` used to assume Keychain there,
+    /// which `secrets::set` refuses — so a CLI browser sign-in failed with
+    /// "keychain disabled by user preference" before anything was saved.
+    #[test]
+    fn a_token_saves_before_the_storage_question_is_answered() {
+        let _g = crate::kms::test_env_lock();
+        let prev_home = std::env::var("HOME").ok();
+        let home = tempfile::tempdir().unwrap();
+        std::env::set_var("HOME", home.path());
+        let (_, env) = super::token_slot();
+        std::env::remove_var(&env);
+        assert!(
+            crate::secrets::get_backend().is_none(),
+            "nothing chosen yet"
+        );
+
+        let saved = super::set_token("thc_fresh_install_token");
+        let dotenv =
+            std::fs::read_to_string(crate::dotenv::user_dotenv_path().unwrap()).unwrap_or_default();
+        let read_back = super::token();
+        super::clear_token().unwrap();
+        let after_clear = super::token();
+
+        match prev_home {
+            Some(h) => std::env::set_var("HOME", h),
+            None => std::env::remove_var("HOME"),
+        }
+        saved.expect("set_token must succeed with no backend chosen");
+        assert!(dotenv.contains(&format!("{env}=thc_fresh_install_token")));
+        assert_eq!(read_back.as_deref(), Some("thc_fresh_install_token"));
+        assert_eq!(after_clear, None);
     }
 }

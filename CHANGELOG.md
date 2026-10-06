@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.140.0] — 2026-10-06
+
+**A release about first launches.** Two things that only went wrong the first
+time: a brand-new folder opened as a single agent until the app was reopened,
+and a sign-in made before the key-storage question was answered could not save
+its token.
+
+### Fixed
+- **A new folder holds more than one agent from the first launch.** An empty or
+  plain folder used to open as a single-agent workspace and only become a
+  multi-agent one the second time the app opened it, so a new workspace showed
+  no agents until a restart. It is set up with its first agent straight away
+  now; existing single-agent workspaces still upgrade as before.
+- **Signing in before choosing where keys are stored works.** Until the
+  first-run storage question is answered, tokens and keys are kept in the
+  profile's `.env` — which is what thClaws already did everywhere else — instead
+  of failing with "keychain disabled by user preference". This affected a
+  browser sign-in from the CLI on a fresh install, and the remote-agent token.
+
 ## [0.139.0] — 2026-10-06
 
 **A release about running thClaws inside an organisation.** An install locked to
