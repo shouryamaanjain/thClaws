@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { basePath, botQuery, send, subscribe, type IPCMessage } from "../hooks/useIPC";
+import { currentBranding } from "../hooks/useBranding";
 import type { BotStatus } from "./BotRail";
 
 // dev-plan/59 §6.3: the workspace's own surface — what belongs to no single
@@ -136,7 +137,7 @@ export function HostPanel({
                 onClick={() => restart(b.slug)}
                 title={
                   b.state === "crash_looped"
-                    ? "thClaws stopped retrying this agent; try again"
+                    ? `${currentBranding().name} stopped retrying this agent; try again`
                     : "Stop and start this agent"
                 }
                 className="px-2 py-0.5 rounded text-xs border border-[var(--border)] disabled:opacity-40 hover:bg-[var(--bg-tertiary)]"
